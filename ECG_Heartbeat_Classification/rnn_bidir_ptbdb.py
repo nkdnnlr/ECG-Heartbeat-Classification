@@ -26,9 +26,9 @@ def get_model():
     nclass = 1
     inp = Input(shape=(187, 1))
 
-    layer = GRU(64, name='GRU1', return_sequences=True, dropout=0.2)#(inp)
+    layer = LSTM(64, name='LSTM1', return_sequences=True, dropout=0.2)#(inp)
     x = Bidirectional(layer, name='BiRNN1')(inp)
-    layer = GRU(128, name='GRU2', dropout=0.2)#(x)
+    layer = LSTM(128, name='LSTM2', dropout=0.2)#(x)
     x = Bidirectional(layer, name='BiRNN2')(x)
     x = Dense(64, name='Dense1', activation='relu')(x)
     x = Dense(16, name='Dense2', activation='relu')(x)
@@ -43,7 +43,7 @@ def get_model():
     return model
 
 model = get_model()
-file_path = "baseline_rnn_bidir_ptbdb.h5"
+file_path = "rnn_lstm_bidir_ptbdb.h5"
 checkpoint = ModelCheckpoint(file_path, monitor='val_acc', verbose=1, save_best_only=True, mode='max')
 early = EarlyStopping(monitor="val_acc", mode="max", patience=5, verbose=1)
 redonplat = ReduceLROnPlateau(monitor="val_acc", mode="max", patience=3, verbose=2)
