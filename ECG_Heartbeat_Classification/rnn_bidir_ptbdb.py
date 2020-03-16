@@ -23,7 +23,7 @@ X_test = np.array(df_test[list(range(187))].values)[..., np.newaxis]
 
 
 def get_model():
-    nclass = 2
+    nclass = 1
     inp = Input(shape=(187, 1))
 
     layer = GRU(64, name='GRU1', return_sequences=True, dropout=0.2)#(inp)
@@ -33,12 +33,12 @@ def get_model():
     x = Dense(64, name='Dense1', activation='relu')(x)
     x = Dense(16, name='Dense2', activation='relu')(x)
     x = Dense(8, name='Dense3', activation='relu')(x)
-    x = Dense(nclass, name='Output', activation=activations.softmax)(x)
+    x = Dense(nclass, name='Output', activation='sigmoid')(x)
 
     model = models.Model(inputs=inp, outputs=x)
     opt = optimizers.Adam(0.001)
 
-    model.compile(optimizer=opt, loss=losses.sparse_categorical_crossentropy, metrics=['acc'])
+    model.compile(optimizer=opt, loss=losses.binary_crossentropy, metrics=['acc'])
     model.summary()
     return model
 
