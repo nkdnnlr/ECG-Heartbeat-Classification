@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 
+import tensorflow as tf
 from keras import optimizers, losses, activations, models
 from keras.callbacks import ModelCheckpoint, EarlyStopping, LearningRateScheduler, ReduceLROnPlateau
 from keras.layers import Dense, Input, Dropout, Convolution1D, MaxPool1D, GlobalMaxPool1D, GlobalAveragePooling1D, \
@@ -8,8 +9,7 @@ from keras.layers import Dense, Input, Dropout, Convolution1D, MaxPool1D, Global
 from sklearn.metrics import f1_score, accuracy_score
 
 from keras.models import Sequential
-from keras.layers import Dense, Dropout, Embedding, LSTM, GRU
-
+from keras.layers import Dense, Dropout, Embedding, LSTM, GRU, Bidirectional
 
 df_train = pd.read_csv("../data/heartbeat/mitbih_train.csv", header=None)
 df_train = df_train.sample(frac=1)
@@ -42,8 +42,27 @@ def get_model():
     model.summary()
     return model
 
-model = get_model()
-file_path = "rnn_mitbih.h5"
+def get_another_model():
+    nclass = 5
+    inp = Input(shape=(187, 1))
+
+    layer = GRU(64, name='GRU1', return_sequences=True, dropout=0.2)#(inp)
+    x = Bidirectional(layer, name='BiRNN1')(inp)
+    layer = GRU(128, name='GRU2', dropout=0.2)#(x)
+    x = Bidirectional(layer, name='BiRNN2')(x)
+    x = Dense(64, name='Dense1', activation='relu')(x)
+    x = Dense(16, name='Dense2', activation='relu')(x)
+    x = Dense(nclass, name='Output', activation=activations.softmax)(x)
+
+    model = models.Model(inputs=inp, outputs=x)
+    opt = optimizers.Adam(0.001)
+
+    model.compile(optimizer=opt, loss=losses.sparse_categorical_crossentropy, metrics=['acc'])
+    model.summary()
+    return model
+
+model = get_another_model()
+file_path = "rnn_bidirectional_mitbih.h5"
 checkpoint = ModelCheckpoint(file_path, monitor='val_acc', verbose=1, save_best_only=True, mode='max')
 early = EarlyStopping(monitor="val_acc", mode="max", patience=5, verbose=1)
 redonplat = ReduceLROnPlateau(monitor="val_acc", mode="max", patience=3, verbose=2)
