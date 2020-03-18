@@ -90,6 +90,27 @@ def rnn_gru(nclass, input_shape=(187, 1), hidden_layers=[64, 128, 64, 16], dropo
     return model
 
 
+def rnn_gru_bidir_ptbdl():
+    nclass = 1
+    inp = Input(shape=(187, 1))
+
+    layer = GRU(64, name='1', return_sequences=True, dropout=0.2)#(inp)
+    x = Bidirectional(layer, name='BiRNN1')(inp)
+    layer = GRU(128, name='LSTM2', dropout=0.2)#(x)
+    x = Bidirectional(layer, name='BiRNN2')(x)
+    x = Dense(64, name='Dense1', activation='relu')(x)
+    x = Dense(16, name='Dense2', activation='relu')(x)
+    x = Dense(8, name='Dense3', activation='relu')(x)
+    x = Dense(nclass, name='Output', activation='sigmoid')(x)
+
+    model = models.Model(inputs=inp, outputs=x)
+    opt = optimizers.Adam(0.001)
+
+    model.compile(optimizer=opt, loss=losses.binary_crossentropy, metrics=['acc'])
+    model.summary()
+    return model
+
+
 def rnn_gru_bidir(nclass, input_shape=(187, 1), hidden_layers=[64, 128, 64, 16], dropout=0.2, loss=losses.sparse_categorical_crossentropy):
     """
     Bidirectional RNN with Gated Rectified Units
@@ -107,7 +128,7 @@ def rnn_gru_bidir(nclass, input_shape=(187, 1), hidden_layers=[64, 128, 64, 16],
     x = Bidirectional(layer, name='BiRNN2')(x)
     x = Dense(hidden_layers[2], name='Dense1', activation='relu')(x)
     x = Dense(hidden_layers[3], name='Dense2', activation='relu')(x)
-    x = Dense(8, name='Dense3', activation='relu')(x)
+    # x = Dense(8, name='Dense3', activation='relu')(x)
     x = Dense(nclass, name='Output', activation=activations.softmax)(x)
 
     model = models.Model(inputs=inp, outputs=x)
@@ -118,8 +139,28 @@ def rnn_gru_bidir(nclass, input_shape=(187, 1), hidden_layers=[64, 128, 64, 16],
     return model
 
 
-def transfer_learning(nclass, model_pretrained):
-    model_pretrained.pop()
+def transfer_learning(nclass, base_model, loss=losses.binary_crossentropy):
+    base_model.layers.pop()
+    base_model.layers[-1].outbound_nodes = []
+    base_model.outputs = [base_model.layers[-1].output]
+    x = base_model.get_layer('Dense2').output
+
+    inp = base_model.input
+
+    # x = base_model.output
+    x = Dense(256, activation='relu')(x)
+    x = Dense(8, activation='relu')(x)
+    x = Dense(nclass, name='Output', activation='sigmoid')(x)
+
+    model = models.Model(inputs=inp, outputs=x)
+
+    # Freeze layers
+    for layer in base_model.layers:
+        layer.trainable = False
+
+    opt = optimizers.Adam(0.001)
+    model.compile(optimizer=opt, loss=loss, metrics=['acc'])
+    model.summary()
 
 
 def cnn_1d(nclass, input_shape=(187, 1)):

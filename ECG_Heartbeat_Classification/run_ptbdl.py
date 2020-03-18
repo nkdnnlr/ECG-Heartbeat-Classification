@@ -18,8 +18,8 @@ from utils import get_model
 models = [#'rnn_lstm', \
           # 'rnn_lstm_bidir', \
           # 'rnn_gru', \
-          'rnn_gru_bidir',\
-          # 'rnn_gru_bidir_transfer',\
+          # 'rnn_gru_bidir',\
+          'rnn_gru_bidir_transfer',\
           ]
 
 def run(model, X, Y, file_path):
@@ -58,7 +58,7 @@ if 'rnn_lstm' in models:
 
     # Test and print out scores
     pred_test = model.predict(X_test)
-    pred_test = np.argmax(pred_test, axis=-1)
+    pred_test = (pred_test > 0.5).astype(np.int8)
 
     # Calculate scores
     f1 = f1_score(Y_test, pred_test)
@@ -84,7 +84,7 @@ if 'rnn_gru' in models:
 
     # Test and print out scores
     pred_test = model.predict(X_test)
-    pred_test = np.argmax(pred_test, axis=-1)
+    pred_test = (pred_test > 0.5).astype(np.int8)
 
     # Calculate scores
     f1 = f1_score(Y_test, pred_test)
@@ -100,18 +100,19 @@ if 'rnn_gru' in models:
 #
 # Bidirectional GRU
 if 'rnn_gru_bidir' in models:
-    model = get_model.rnn_gru_bidir(nclass=1, loss=losses.binary_crossentropy)
-    file_name = "ptbdb_rnn_gru_bidir"
-    # file_name = "baseline_rnn_bidir_ptbdb"
+    # model = get_model.rnn_gru_bidir(nclass=1, loss=losses.binary_crossentropy)
+    model = get_model.rnn_gru_bidir_ptbdl()
+    # file_name = "ptbdb_rnn_gru_bidir"
+    file_name = "baseline_rnn_bidir_ptbdb"
     file_path = file_name + ".h5"
-    run(model, X, Y, file_path)
+    # run(model, X, Y, file_path)
     model.load_weights(file_path)
     # Save the entire model as a SavedModel.
-    model.save(os.path.join(model_directory, file_name))
+    # model.save(os.path.join(model_directory, file_name))
 
     # Test and print out scores
     pred_test = model.predict(X_test)
-    pred_test = np.argmax(pred_test, axis=-1)
+    pred_test = (pred_test > 0.5).astype(np.int8)
 
     # Calculate scores
     f1 = f1_score(Y_test, pred_test)
@@ -127,8 +128,13 @@ if 'rnn_gru_bidir' in models:
 #
 # Transfer Learning
 if 'rnn_gru_bidir_transfer' in models:
-    model = get_model.rnn_gru_bidir(nclass=1, loss=losses.binary_crossentropy)
-    file_name = "ptbdb_rnn_gru_bidir"
+    base_model = get_model.rnn_gru_bidir(nclass=5)
+    file_name = "rnn_bidirectional_mitbih"
+    file_path = file_name + ".h5"
+    base_model.load_weights(file_path)
+
+    model = get_model.transfer_learning(nclass=1, base_model=base_model, loss=losses.binary_crossentropy)
+    file_name = "ptbdb_rnn_gru_bidir_transfer"
     # file_name = "baseline_rnn_bidir_ptbdb"
     file_path = file_name + ".h5"
     run(model, X, Y, file_path)
@@ -138,7 +144,7 @@ if 'rnn_gru_bidir_transfer' in models:
 
     # Test and print out scores
     pred_test = model.predict(X_test)
-    pred_test = np.argmax(pred_test, axis=-1)
+    pred_test = (pred_test > 0.5).astype(np.int8)
 
     # Calculate scores
     f1 = f1_score(Y_test, pred_test)
