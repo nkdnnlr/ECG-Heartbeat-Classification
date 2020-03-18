@@ -8,7 +8,7 @@ from keras import optimizers, losses, activations, models
 from keras.callbacks import ModelCheckpoint, EarlyStopping, LearningRateScheduler, ReduceLROnPlateau
 from keras.layers import Dense, Input, Dropout, Convolution1D, MaxPool1D, GlobalMaxPool1D, GlobalAveragePooling1D, \
     concatenate
-from sklearn.metrics import f1_score, accuracy_score
+from sklearn.metrics import accuracy_score, f1_score, average_precision_score, roc_auc_score
 from keras.models import Sequential
 from keras.layers import Dense, Dropout, Embedding, LSTM, GRU, Bidirectional
 from sklearn.model_selection import train_test_split
@@ -17,8 +17,8 @@ from utils import get_model
 
 models = [#'rnn_lstm', \
           # 'rnn_lstm_bidir', \
-          'rnn_gru', \
-          # 'rnn_gru_bidir',\
+          # 'rnn_gru', \
+          'rnn_gru_bidir',\
           ]
 
 def run(model, X, Y, file_path):
@@ -26,10 +26,7 @@ def run(model, X, Y, file_path):
     early = EarlyStopping(monitor="val_acc", mode="max", patience=5, verbose=1)
     redonplat = ReduceLROnPlateau(monitor="val_acc", mode="max", patience=3, verbose=2)
     callbacks_list = [checkpoint, early, redonplat]  # early
-    print("here")
     model.fit(X, Y, epochs=1000, verbose=2, callbacks=callbacks_list, validation_split=0.1)
-    print("here")
-    model.load_weights(file_path)
 
 
 # Make directory
@@ -54,16 +51,24 @@ if 'rnn_lstm' in models:
     file_name = "ptbdb_rnn_lstm"
     file_path = file_name + ".h5"
     run(model, X, Y, file_path)
+    model.load_weights(file_path)
     # Save the entire model as a SavedModel.
     model.save(os.path.join(model_directory, file_name))
 
     # Test and print out scores
     pred_test = model.predict(X_test)
     pred_test = np.argmax(pred_test, axis=-1)
-    f1 = f1_score(Y_test, pred_test, average="macro")
-    print("Test f1 score : %s "% f1)
+
+    # Calculate scores
+    f1 = f1_score(Y_test, pred_test)
     acc = accuracy_score(Y_test, pred_test)
-    print("Test accuracy score : %s "% acc)
+    auroc = roc_auc_score(Y_test, pred_test)
+    auprc = average_precision_score(Y_test, pred_test)
+
+    print("Test f1 score : %s " % f1)
+    print("Test accuracy score : %s " % acc)
+    print("AUROC score : %s " % auroc)
+    print("AUPRC accuracy score : %s " % auprc)
 
 #
 # GRU
@@ -72,34 +77,51 @@ if 'rnn_gru' in models:
     file_name = "ptbdb_rnn_gru"
     file_path = file_name + ".h5"
     run(model, X, Y, file_path)
+    model.load_weights(file_path)
     # Save the entire model as a SavedModel.
     model.save(os.path.join(model_directory, file_name))
 
     # Test and print out scores
     pred_test = model.predict(X_test)
     pred_test = np.argmax(pred_test, axis=-1)
-    f1 = f1_score(Y_test, pred_test, average="macro")
-    print("Test f1 score : %s "% f1)
+
+    # Calculate scores
+    f1 = f1_score(Y_test, pred_test)
     acc = accuracy_score(Y_test, pred_test)
-    print("Test accuracy score : %s "% acc)
+    auroc = roc_auc_score(Y_test, pred_test)
+    auprc = average_precision_score(Y_test, pred_test)
+
+    print("Test f1 score : %s " % f1)
+    print("Test accuracy score : %s " % acc)
+    print("AUROC score : %s " % auroc)
+    print("AUPRC accuracy score : %s " % auprc)
 
 #
 # Bidirectional GRU
 if 'rnn_gru_bidir' in models:
     model = get_model.rnn_gru_bidir(nclass=1, loss=losses.binary_crossentropy)
-    file_name = "ptbdb_rnn_gru_bidir"
+    # file_name = "ptbdb_rnn_gru_bidir"
+    file_name = "baseline_rnn_bidir_ptbdb"
     file_path = file_name + ".h5"
-    run(model, X, Y, file_path)
+    # run(model, X, Y, file_path)
+    model.load_weights(file_path)
     # Save the entire model as a SavedModel.
-    model.save(os.path.join(model_directory, file_name))
+    # model.save(os.path.join(model_directory, file_name))
 
     # Test and print out scores
     pred_test = model.predict(X_test)
     pred_test = np.argmax(pred_test, axis=-1)
-    f1 = f1_score(Y_test, pred_test, average="macro")
-    print("Test f1 score : %s "% f1)
+
+    # Calculate scores
+    f1 = f1_score(Y_test, pred_test)
     acc = accuracy_score(Y_test, pred_test)
-    print("Test accuracy score : %s "% acc)
+    auroc = roc_auc_score(Y_test, pred_test)
+    auprc = average_precision_score(Y_test, pred_test)
+
+    print("Test f1 score : %s " % f1)
+    print("Test accuracy score : %s " % acc)
+    print("AUROC score : %s " % auroc)
+    print("AUPRC accuracy score : %s " % auprc)
 
 print("Done.")
 
