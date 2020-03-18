@@ -161,6 +161,7 @@ def transfer_learning(nclass, base_model, loss=losses.binary_crossentropy):
     opt = optimizers.Adam(0.001)
     model.compile(optimizer=opt, loss=loss, metrics=['acc'])
     model.summary()
+    return model
 
 
 def cnn_1d(nclass, input_shape=(187, 1)):
