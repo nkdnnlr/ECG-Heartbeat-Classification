@@ -107,6 +107,7 @@ def rnn_gru_bidir(nclass, input_shape=(187, 1), hidden_layers=[64, 128, 64, 16],
     x = Bidirectional(layer, name='BiRNN2')(x)
     x = Dense(hidden_layers[2], name='Dense1', activation='relu')(x)
     x = Dense(hidden_layers[3], name='Dense2', activation='relu')(x)
+    x = Dense(8, name='Dense3', activation='relu')(x)
     x = Dense(nclass, name='Output', activation=activations.softmax)(x)
 
     model = models.Model(inputs=inp, outputs=x)
@@ -117,7 +118,11 @@ def rnn_gru_bidir(nclass, input_shape=(187, 1), hidden_layers=[64, 128, 64, 16],
     return model
 
 
-def get_model(nclass, input_shape=(187, 1)):
+def transfer_learning(nclass, model_pretrained):
+    model_pretrained.pop()
+
+
+def cnn_1d(nclass, input_shape=(187, 1)):
     """
     1d ConvNet
     :param nclass:
