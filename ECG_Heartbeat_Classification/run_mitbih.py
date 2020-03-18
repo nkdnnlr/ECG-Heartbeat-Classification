@@ -14,6 +14,12 @@ from keras.layers import Dense, Dropout, Embedding, LSTM, GRU, Bidirectional
 
 from utils import get_model
 
+models = ['rnn_lstm', \
+          # 'rnn_lstm_bidir', \
+          # 'rnn_gru', \
+          # 'rnn_gru_bidir',\
+          ]
+
 def run(model, file_path):
     checkpoint = ModelCheckpoint(file_path, monitor='val_acc', verbose=1, save_best_only=True, mode='max')
     early = EarlyStopping(monitor="val_acc", mode="max", patience=5, verbose=1)
@@ -40,54 +46,57 @@ X_test = np.array(df_test[list(range(187))].values)[..., np.newaxis]
 
 #
 # LSTM
-model = get_model.rnn_lstm(nclass=5)
-file_name = "mitbih_rnn_lstm"
-file_path = file_name + ".h5"
-run(model, file_path)
-# Save the entire model as a SavedModel.
-model.save(os.path.join(model_directory, file_name))
+if 'rnn_lstm' in models:
+    model = get_model.rnn_lstm(nclass=5)
+    file_name = "mitbih_rnn_lstm"
+    file_path = file_name + ".h5"
+    run(model, file_path)
+    # Save the entire model as a SavedModel.
+    model.save(os.path.join(model_directory, file_name))
 
-# Test and print out scores
-pred_test = model.predict(X_test)
-pred_test = np.argmax(pred_test, axis=-1)
-f1 = f1_score(Y_test, pred_test, average="macro")
-print("Test f1 score : %s "% f1)
-acc = accuracy_score(Y_test, pred_test)
-print("Test accuracy score : %s "% acc)
+    # Test and print out scores
+    pred_test = model.predict(X_test)
+    pred_test = np.argmax(pred_test, axis=-1)
+    f1 = f1_score(Y_test, pred_test, average="macro")
+    print("Test f1 score : %s "% f1)
+    acc = accuracy_score(Y_test, pred_test)
+    print("Test accuracy score : %s "% acc)
 
 #
 # GRU
-model = get_model.rnn_gru(nclass=5)
-file_name = "mitbih_rnn_gru"
-file_path = file_name + ".h5"
-run(model, file_path)
-# Save the entire model as a SavedModel.
-model.save(os.path.join(model_directory, file_name))
+if 'rnn_gru' in models:
+    model = get_model.rnn_gru(nclass=5)
+    file_name = "mitbih_rnn_gru"
+    file_path = file_name + ".h5"
+    run(model, file_path)
+    # Save the entire model as a SavedModel.
+    model.save(os.path.join(model_directory, file_name))
 
-# Test and print out scores
-pred_test = model.predict(X_test)
-pred_test = np.argmax(pred_test, axis=-1)
-f1 = f1_score(Y_test, pred_test, average="macro")
-print("Test f1 score : %s "% f1)
-acc = accuracy_score(Y_test, pred_test)
-print("Test accuracy score : %s "% acc)
+    # Test and print out scores
+    pred_test = model.predict(X_test)
+    pred_test = np.argmax(pred_test, axis=-1)
+    f1 = f1_score(Y_test, pred_test, average="macro")
+    print("Test f1 score : %s "% f1)
+    acc = accuracy_score(Y_test, pred_test)
+    print("Test accuracy score : %s "% acc)
 
 #
 # Bidirectional GRU
-model = get_model.rnn_gru_bidir(nclass=5)
-file_name = "mitbih_rnn_gru_bidir"
-file_path = file_name + ".h5"
-run(model, file_path)
-# Save the entire model as a SavedModel.
-model.save(os.path.join(model_directory, file_name))
+if 'rnn_gru_bidir' in models:
+    model = get_model.rnn_gru_bidir(nclass=5)
+    file_name = "mitbih_rnn_gru_bidir"
+    file_path = file_name + ".h5"
+    run(model, file_path)
+    # Save the entire model as a SavedModel.
+    model.save(os.path.join(model_directory, file_name))
 
-# Test and print out scores
-pred_test = model.predict(X_test)
-pred_test = np.argmax(pred_test, axis=-1)
-f1 = f1_score(Y_test, pred_test, average="macro")
-print("Test f1 score : %s "% f1)
-acc = accuracy_score(Y_test, pred_test)
-print("Test accuracy score : %s "% acc)
+    # Test and print out scores
+    pred_test = model.predict(X_test)
+    pred_test = np.argmax(pred_test, axis=-1)
+    f1 = f1_score(Y_test, pred_test, average="macro")
+    print("Test f1 score : %s "% f1)
+    acc = accuracy_score(Y_test, pred_test)
+    print("Test accuracy score : %s "% acc)
 
-
+print("Done.")
 
