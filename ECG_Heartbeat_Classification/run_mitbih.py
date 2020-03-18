@@ -12,8 +12,7 @@ from sklearn.metrics import f1_score, accuracy_score
 from keras.models import Sequential
 from keras.layers import Dense, Dropout, Embedding, LSTM, GRU, Bidirectional
 
-from ECG_Heartbeat_Classification import get_model
-
+from utils import get_model
 
 def run(model, file_path):
     checkpoint = ModelCheckpoint(file_path, monitor='val_acc', verbose=1, save_best_only=True, mode='max')
