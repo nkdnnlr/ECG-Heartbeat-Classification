@@ -12,13 +12,14 @@ from keras.models import Sequential
 from keras.layers import Dense, Dropout, Embedding, LSTM, GRU, Bidirectional
 
 
-def rnn_lstm(nclass, input_shape=(187, 1), hidden_layers=[64, 128, 64, 16], dropout=0.2):
+def rnn_lstm(nclass, input_shape=(187, 1), hidden_layers=[64, 128, 64, 16], dropout=0.2, loss=losses.sparse_categorical_crossentropy):
     """
     RNN with Long Short Term Memory (LSTM) Units
     :param nclass:
     :param input_shape:
     :param layers:
     :param dropout:
+    :param loss:
     :return:
     """
     inp = Input(shape=input_shape)
@@ -32,12 +33,12 @@ def rnn_lstm(nclass, input_shape=(187, 1), hidden_layers=[64, 128, 64, 16], drop
     model = models.Model(inputs=inp, outputs=x)
     opt = optimizers.Adam(0.001)
 
-    model.compile(optimizer=opt, loss=losses.sparse_categorical_crossentropy, metrics=['acc'])
+    model.compile(optimizer=opt, loss=loss, metrics=['acc'])
     model.summary()
     return model
 
 
-def rnn_lstm_bidir(nclass, input_shape=(187, 1), hidden_layers=[64, 128, 64, 16], dropout=0.2):
+def rnn_lstm_bidir(nclass, input_shape=(187, 1), hidden_layers=[64, 128, 64, 16], dropout=0.2, loss=losses.sparse_categorical_crossentropy):
     """
     Bidirectional RNN with Long Short Term Memory (LSTM) Units
     :param nclass:
@@ -59,12 +60,12 @@ def rnn_lstm_bidir(nclass, input_shape=(187, 1), hidden_layers=[64, 128, 64, 16]
     model = models.Model(inputs=inp, outputs=x)
     opt = optimizers.Adam(0.001)
 
-    model.compile(optimizer=opt, loss=losses.sparse_categorical_crossentropy, metrics=['acc'])
+    model.compile(optimizer=opt, loss=loss, metrics=['acc'])
     model.summary()
     return model
 
 
-def rnn_gru(nclass, input_shape=(187, 1), hidden_layers=[64, 128, 64, 16], dropout=0.2):
+def rnn_gru(nclass, input_shape=(187, 1), hidden_layers=[64, 128, 64, 16], dropout=0.2, loss=losses.sparse_categorical_crossentropy):
     """
     RNN with Gated Rectified Units
     :param nclass:
@@ -84,12 +85,12 @@ def rnn_gru(nclass, input_shape=(187, 1), hidden_layers=[64, 128, 64, 16], dropo
     model = models.Model(inputs=inp, outputs=x)
     opt = optimizers.Adam(0.001)
 
-    model.compile(optimizer=opt, loss=losses.sparse_categorical_crossentropy, metrics=['acc'])
+    model.compile(optimizer=opt, loss=loss, metrics=['acc'])
     model.summary()
     return model
 
 
-def rnn_gru_bidir(nclass, input_shape=(187, 1), hidden_layers=[64, 128, 64, 16], dropout=0.2):
+def rnn_gru_bidir(nclass, input_shape=(187, 1), hidden_layers=[64, 128, 64, 16], dropout=0.2, loss=losses.sparse_categorical_crossentropy):
     """
     Bidirectional RNN with Gated Rectified Units
     :param nclass:
@@ -111,7 +112,7 @@ def rnn_gru_bidir(nclass, input_shape=(187, 1), hidden_layers=[64, 128, 64, 16],
     model = models.Model(inputs=inp, outputs=x)
     opt = optimizers.Adam(0.001)
 
-    model.compile(optimizer=opt, loss=losses.sparse_categorical_crossentropy, metrics=['acc'])
+    model.compile(optimizer=opt, loss=loss, metrics=['acc'])
     model.summary()
     return model
 
