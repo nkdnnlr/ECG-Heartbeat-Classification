@@ -100,13 +100,13 @@ if 'rnn_gru' in models:
 # Bidirectional GRU
 if 'rnn_gru_bidir' in models:
     model = get_model.rnn_gru_bidir(nclass=1, loss=losses.binary_crossentropy)
-    # file_name = "ptbdb_rnn_gru_bidir"
-    file_name = "baseline_rnn_bidir_ptbdb"
+    file_name = "ptbdb_rnn_gru_bidir"
+    # file_name = "baseline_rnn_bidir_ptbdb"
     file_path = file_name + ".h5"
-    # run(model, X, Y, file_path)
+    run(model, X, Y, file_path)
     model.load_weights(file_path)
     # Save the entire model as a SavedModel.
-    # model.save(os.path.join(model_directory, file_name))
+    model.save(os.path.join(model_directory, file_name))
 
     # Test and print out scores
     pred_test = model.predict(X_test)
