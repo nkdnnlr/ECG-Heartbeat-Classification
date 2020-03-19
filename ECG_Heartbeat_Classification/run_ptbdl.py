@@ -50,7 +50,7 @@ X_test = np.array(df_test[list(range(187))].values)[..., np.newaxis]
 if 'rnn_lstm' in models:
     model = get_model.rnn_lstm(nclass=1, dense_layers=[64, 16, 8], binary=True)
     file_name = "ptbdb_rnn_lstm"
-    file_path = file_name + ".h5"
+    file_path = os.path.join(model_directory, file_name + ".h5")
     run(model, X, Y, file_path)
     model.load_weights(file_path)
     # Save the entire model as a SavedModel.
@@ -76,7 +76,7 @@ if 'rnn_lstm' in models:
 if 'rnn_gru' in models:
     model = get_model.rnn_gru(nclass=1, dense_layers=[64, 16, 8], binary=True)
     file_name = "ptbdb_rnn_gru"
-    file_path = file_name + ".h5"
+    file_path = os.path.join(model_directory, file_name + ".h5")
     run(model, X, Y, file_path)
     model.load_weights(file_path)
     # Save the entire model as a SavedModel.
@@ -102,7 +102,7 @@ if 'rnn_gru' in models:
 if 'rnn_gru_bidir' in models:
     model = get_model.rnn_gru_bidir(nclass=1, dense_layers=[64, 16, 8], binary=True)
     file_name = "ptbdb_rnn_gru_bidir"
-    file_path = file_name + ".h5"
+    file_path = os.path.join(model_directory, file_name + ".h5")
     run(model, X, Y, file_path)
     model.load_weights(file_path)
     # Save the entire model as a SavedModel.
@@ -128,7 +128,7 @@ if 'rnn_gru_bidir' in models:
 if 'rnn_gru_bidir_transfer' in models:
     base_model = get_model.rnn_gru_bidir(nclass=5, dense_layers=[64, 16], binary=False)
     file_name = "rnn_bidirectional_mitbih"
-    file_path = file_name + ".h5"
+    file_path = os.path.join(model_directory, file_name + ".h5")
     base_model.load_weights(file_path)
 
     model = get_model.transfer_learning(nclass=1, base_model=base_model, loss=losses.binary_crossentropy)
