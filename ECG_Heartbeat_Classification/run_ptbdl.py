@@ -30,7 +30,7 @@ def run(model, X, Y, file_path):
     model.fit(X, Y, epochs=1000, verbose=2, callbacks=callbacks_list, validation_split=0.1)
 
 # Set global random seed for reproducibility
-tf.random.set_seed(42)
+tf.random.set_seed(42)  ## ATTENTION: Unfortunately this has been added after the model has run.
 
 # Make directory
 model_directory = "../models"
