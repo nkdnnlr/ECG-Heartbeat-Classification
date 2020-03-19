@@ -12,7 +12,7 @@ from keras.models import Sequential
 from keras.layers import Dense, Dropout, Embedding, LSTM, GRU, Bidirectional
 
 
-def rnn_lstm(nclass, input_shape=(187, 1), hidden_layers=[64, 128, 64, 16], dropout=0.2, loss=losses.sparse_categorical_crossentropy):
+def rnn_lstm(nclass, input_shape=(187, 1), recurrent_layers=[64, 128], dense_layers=[64, 16], dropout=0.2, binary=False):
     """
     RNN with Long Short Term Memory (LSTM) Units
     :param nclass:
@@ -22,23 +22,31 @@ def rnn_lstm(nclass, input_shape=(187, 1), hidden_layers=[64, 128, 64, 16], drop
     :param loss:
     :return:
     """
-    inp = Input(shape=input_shape)
+    if not binary:
+        loss = losses.sparse_categorical_crossentropy
+        last_activation = activations.softmax
+    else:
+        loss = losses.binary_crossentropy
+        last_activation = activations.sigmoid
+    return_sequences = True
 
-    x = LSTM(hidden_layers[0], name='LSTM1', return_sequences=True, dropout=dropout)(inp)
-    x = LSTM(hidden_layers[1], name='LSTM2', dropout=dropout)(x)
-    x = Dense(hidden_layers[2], name='Dense1', activation='relu')(x)
-    x = Dense(hidden_layers[3], name='Dense2', activation='relu')(x)
-    x = Dense(nclass, name='Output', activation=activations.softmax)(x)
+    inp = Input(shape=input_shape)
+    x = inp
+    for neurons in recurrent_layers:
+        layer = LSTM(neurons, return_sequences=return_sequences, dropout=dropout)(x)
+        return_sequences = False
+    for neurons in dense_layers:
+        x = Dense(neurons, activation='relu')(x)
+    x = Dense(nclass, name='Output', activation=last_activation)(x)
 
     model = models.Model(inputs=inp, outputs=x)
     opt = optimizers.Adam(0.001)
-
     model.compile(optimizer=opt, loss=loss, metrics=['acc'])
     model.summary()
     return model
 
 
-def rnn_lstm_bidir(nclass, input_shape=(187, 1), hidden_layers=[64, 128, 64, 16], dropout=0.2, loss=losses.sparse_categorical_crossentropy):
+def rnn_lstm_bidir(nclass, input_shape=(187, 1), recurrent_layers=[64, 128], dense_layers=[64, 16], dropout=0.2, binary=False):
     """
     Bidirectional RNN with Long Short Term Memory (LSTM) Units
     :param nclass:
@@ -47,25 +55,30 @@ def rnn_lstm_bidir(nclass, input_shape=(187, 1), hidden_layers=[64, 128, 64, 16]
     :param dropout:
     :return:
     """
-    inp = Input(shape=input_shape)
+    if not binary:
+        loss = losses.sparse_categorical_crossentropy
+        last_activation = activations.softmax
+    else:
+        loss = losses.binary_crossentropy
+        last_activation = activations.sigmoid
+    return_sequences = True
 
-    layer = LSTM(hidden_layers[0], name='LSTM1', return_sequences=True, dropout=dropout)  # (inp)
-    x = Bidirectional(layer, name='BiRNN1')(inp)
-    layer = LSTM(hidden_layers[1], name='LSTM2', dropout=dropout)  # (x)
-    x = Bidirectional(layer, name='BiRNN2')(x)
-    x = Dense(hidden_layers[2], name='Dense1', activation='relu')(x)
-    x = Dense(hidden_layers[3], name='Dense2', activation='relu')(x)
-    x = Dense(nclass, name='Output', activation=activations.softmax)(x)
+    inp = Input(shape=input_shape)
+    x = inp
+    for neurons in recurrent_layers:
+        layer = LSTM(neurons, return_sequences=return_sequences, dropout=dropout)  # (inp)
+        x = Bidirectional(layer)(x)
+        return_sequences = False
+    for neurons in dense_layers:
+        x = Dense(neurons, activation='relu')(x)
+    x = Dense(nclass, name='Output', activation=last_activation)(x)
 
     model = models.Model(inputs=inp, outputs=x)
     opt = optimizers.Adam(0.001)
-
     model.compile(optimizer=opt, loss=loss, metrics=['acc'])
     model.summary()
-    return model
 
-
-def rnn_gru(nclass, input_shape=(187, 1), hidden_layers=[64, 128, 64, 16], dropout=0.2, loss=losses.sparse_categorical_crossentropy):
+def rnn_gru(nclass, input_shape=(187, 1), recurrent_layers=[64, 128], dense_layers=[64, 16], dropout=0.2, binary=False):
     """
     RNN with Gated Rectified Units
     :param nclass:
@@ -74,44 +87,31 @@ def rnn_gru(nclass, input_shape=(187, 1), hidden_layers=[64, 128, 64, 16], dropo
     :param dropout:
     :return:
     """
-    inp = Input(shape=input_shape)
+    if not binary:
+        loss = losses.sparse_categorical_crossentropy
+        last_activation = activations.softmax
+    else:
+        loss = losses.binary_crossentropy
+        last_activation = activations.sigmoid
+    return_sequences = True
 
-    x = GRU(hidden_layers[0], name='GRU1', return_sequences=True, dropout=dropout)(inp)
-    x = GRU(hidden_layers[1], name='GRU2', dropout=dropout)(x)
-    x = Dense(hidden_layers[2], name='Dense1', activation='relu')(x)
-    x = Dense(hidden_layers[3], name='Dense2', activation='relu')(x)
-    x = Dense(nclass, name='Output', activation=activations.softmax)(x)
+    inp = Input(shape=input_shape)
+    x = inp
+    for neurons in recurrent_layers:
+        layer = GRU(neurons, return_sequences=return_sequences, dropout=dropout)(x)
+        return_sequences = False
+    for neurons in dense_layers:
+        x = Dense(neurons, activation='relu')(x)
+    x = Dense(nclass, name='Output', activation=last_activation)(x)
 
     model = models.Model(inputs=inp, outputs=x)
     opt = optimizers.Adam(0.001)
-
     model.compile(optimizer=opt, loss=loss, metrics=['acc'])
     model.summary()
     return model
 
 
-def rnn_gru_bidir_ptbdl():
-    nclass = 1
-    inp = Input(shape=(187, 1))
-
-    layer = GRU(64, name='1', return_sequences=True, dropout=0.2)#(inp)
-    x = Bidirectional(layer, name='BiRNN1')(inp)
-    layer = GRU(128, name='LSTM2', dropout=0.2)#(x)
-    x = Bidirectional(layer, name='BiRNN2')(x)
-    x = Dense(64, name='Dense1', activation='relu')(x)
-    x = Dense(16, name='Dense2', activation='relu')(x)
-    x = Dense(8, name='Dense3', activation='relu')(x)
-    x = Dense(nclass, name='Output', activation='sigmoid')(x)
-
-    model = models.Model(inputs=inp, outputs=x)
-    opt = optimizers.Adam(0.001)
-
-    model.compile(optimizer=opt, loss=losses.binary_crossentropy, metrics=['acc'])
-    model.summary()
-    return model
-
-
-def rnn_gru_bidir(nclass, input_shape=(187, 1), hidden_layers=[64, 128, 64, 16], dropout=0.2, loss=losses.sparse_categorical_crossentropy):
+def rnn_gru_bidir(nclass, input_shape=(187, 1), recurrent_layers=[64, 128], dense_layers=[64, 16], dropout=0.2, binary=False):
     """
     Bidirectional RNN with Gated Rectified Units
     :param nclass:
@@ -120,20 +120,28 @@ def rnn_gru_bidir(nclass, input_shape=(187, 1), hidden_layers=[64, 128, 64, 16],
     :param dropout:
     :return:
     """
-    inp = Input(shape=input_shape)
+    if not binary:
+        loss = losses.sparse_categorical_crossentropy
+        last_activation = activations.softmax
+    else:
+        loss = losses.binary_crossentropy
+        last_activation = 'sigmoid'
+    return_sequences = True
 
-    layer = GRU(hidden_layers[0], name='GRU1', return_sequences=True, dropout=dropout)  # (inp)
-    x = Bidirectional(layer, name='BiRNN1')(inp)
-    layer = GRU(hidden_layers[1], name='GRU2', dropout=dropout)  # (x)
-    x = Bidirectional(layer, name='BiRNN2')(x)
-    x = Dense(hidden_layers[2], name='Dense1', activation='relu')(x)
-    x = Dense(hidden_layers[3], name='Dense2', activation='relu')(x)
-    # x = Dense(8, name='Dense3', activation='relu')(x)
-    x = Dense(nclass, name='Output', activation=activations.softmax)(x)
+    inp = Input(shape=input_shape)
+    x = inp
+    for neurons in recurrent_layers:
+        print(neurons)
+        layer = GRU(neurons, return_sequences=return_sequences, dropout=dropout)  # (inp)
+        x = Bidirectional(layer)(x)
+        return_sequences = False
+    for neurons in dense_layers:
+        print(neurons)
+        x = Dense(neurons, activation='relu')(x)
+    x = Dense(nclass, name='Output', activation=last_activation)(x)
 
     model = models.Model(inputs=inp, outputs=x)
     opt = optimizers.Adam(0.001)
-
     model.compile(optimizer=opt, loss=loss, metrics=['acc'])
     model.summary()
     return model

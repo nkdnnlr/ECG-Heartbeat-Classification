@@ -14,10 +14,10 @@ from keras.layers import Dense, Dropout, Embedding, LSTM, GRU, Bidirectional
 
 from utils import get_model
 
-models = [#'rnn_lstm', \
-          # 'rnn_lstm_bidir', \
+models = ['rnn_lstm', \
+          #'rnn_lstm_bidir', \
           'rnn_gru', \
-          # 'rnn_gru_bidir',\
+          'rnn_gru_bidir',\
           ]
 
 def run(model, file_path):
@@ -25,9 +25,7 @@ def run(model, file_path):
     early = EarlyStopping(monitor="val_acc", mode="max", patience=5, verbose=1)
     redonplat = ReduceLROnPlateau(monitor="val_acc", mode="max", patience=3, verbose=2)
     callbacks_list = [checkpoint, early, redonplat]  # early
-
     model.fit(X, Y, epochs=1000, verbose=2, callbacks=callbacks_list, validation_split=0.1)
-    model.load_weights(file_path)
 
 
 # Make directory
@@ -47,10 +45,11 @@ X_test = np.array(df_test[list(range(187))].values)[..., np.newaxis]
 #
 # LSTM
 if 'rnn_lstm' in models:
-    model = get_model.rnn_lstm(nclass=5)
+    model = get_model.rnn_lstm(nclass=5, dense_layers=[64, 16, 8])
     file_name = "mitbih_rnn_lstm"
     file_path = file_name + ".h5"
     run(model, file_path)
+    model.load_weights(file_path)
     # Save the entire model as a SavedModel.
     model.save(os.path.join(model_directory, file_name))
 
@@ -65,10 +64,11 @@ if 'rnn_lstm' in models:
 #
 # GRU
 if 'rnn_gru' in models:
-    model = get_model.rnn_gru(nclass=5)
+    model = get_model.rnn_gru(nclass=5, dense_layers=[64, 16, 8])
     file_name = "mitbih_rnn_gru"
     file_path = file_name + ".h5"
     run(model, file_path)
+    model.load_weights(file_path)
     # Save the entire model as a SavedModel.
     model.save(os.path.join(model_directory, file_name))
 
@@ -83,10 +83,11 @@ if 'rnn_gru' in models:
 #
 # Bidirectional GRU
 if 'rnn_gru_bidir' in models:
-    model = get_model.rnn_gru_bidir(nclass=5)
+    model = get_model.rnn_gru_bidir(nclass=5, dense_layers=[64, 16, 8])
     file_name = "mitbih_rnn_gru_bidir"
     file_path = file_name + ".h5"
     run(model, file_path)
+    model.load_weights(file_path)
     # Save the entire model as a SavedModel.
     model.save(os.path.join(model_directory, file_name))
 
