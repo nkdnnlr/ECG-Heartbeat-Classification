@@ -57,7 +57,7 @@ early = EarlyStopping(monitor="val_acc", mode="max", patience=5, verbose=1)
 redonplat = ReduceLROnPlateau(monitor="val_acc", mode="max", patience=3, verbose=2)
 callbacks_list = [checkpoint, early, redonplat]  # early
 
-model.fit(X, Y, epochs=1000, verbose=2, callbacks=callbacks_list, validation_split=0.1)
+# model.fit(X, Y, epochs=1000, verbose=2, callbacks=callbacks_list, validation_split=0.1)
 model.load_weights(file_path)
 
 pred_test = model.predict(X_test)

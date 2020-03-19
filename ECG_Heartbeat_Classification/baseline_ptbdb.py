@@ -5,7 +5,8 @@ from keras import optimizers, losses, activations, models
 from keras.callbacks import ModelCheckpoint, EarlyStopping, LearningRateScheduler, ReduceLROnPlateau
 from keras.layers import Dense, Input, Dropout, Convolution1D, MaxPool1D, GlobalMaxPool1D, GlobalAveragePooling1D, \
     concatenate
-from sklearn.metrics import accuracy_score, f1_score
+from keras.metrics import AUC
+from sklearn.metrics import accuracy_score, f1_score, average_precision_score, roc_auc_score
 from sklearn.model_selection import train_test_split
 
 df_1 = pd.read_csv("../data/heartbeat/ptbdb_normal.csv", header=None)
@@ -60,16 +61,18 @@ early = EarlyStopping(monitor="val_acc", mode="max", patience=5, verbose=1)
 redonplat = ReduceLROnPlateau(monitor="val_acc", mode="max", patience=3, verbose=2)
 callbacks_list = [checkpoint, early, redonplat]  # early
 
-model.fit(X, Y, epochs=1000, verbose=2, callbacks=callbacks_list, validation_split=0.1)
+# model.fit(X, Y, epochs=1000, verbose=2, callbacks=callbacks_list, validation_split=0.1)
 model.load_weights(file_path)
 
 pred_test = model.predict(X_test)
 pred_test = (pred_test>0.5).astype(np.int8)
 
 f1 = f1_score(Y_test, pred_test)
+acc = accuracy_score(Y_test, pred_test)
+auroc = roc_auc_score(Y_test, pred_test)
+auprc = average_precision_score(Y_test, pred_test)
 
 print("Test f1 score : %s "% f1)
-
-acc = accuracy_score(Y_test, pred_test)
-
 print("Test accuracy score : %s "% acc)
+print("AUROC score : %s "% auroc)
+print("AUPRC accuracy score : %s "% auprc)
