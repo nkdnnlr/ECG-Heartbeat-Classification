@@ -14,8 +14,8 @@ from keras.layers import Dense, Dropout, Embedding, LSTM, GRU, Bidirectional
 
 from utils import get_model, helpers
 
-models = ['rnn_lstm', \
-          'rnn_gru', \
+models = [#'rnn_lstm', \
+          #'rnn_gru', \
           'rnn_gru_bidir', \
           'rnn_lstm_bidir', \
           ]

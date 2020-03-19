@@ -86,6 +86,7 @@ def rnn_lstm_bidir(nclass, input_shape=(187, 1), recurrent_layers=[64, 128], den
     opt = optimizers.Adam(0.001)
     model.compile(optimizer=opt, loss=loss, metrics=['acc'])
     model.summary()
+    return model
 
 def rnn_gru(nclass, input_shape=(187, 1), recurrent_layers=[64, 128], dense_layers=[64, 16], dropout=0.2, binary=False):
     """
