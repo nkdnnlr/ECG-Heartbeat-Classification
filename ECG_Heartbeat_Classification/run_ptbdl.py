@@ -17,8 +17,8 @@ from utils import get_model, helpers
 models = [#'rnn_lstm', \
           # 'rnn_gru', \
           # 'rnn_gru_bidir', \
-          # 'rnn_lstm_bidir', \
-          'rnn_gru_bidir_transfer',\
+          'rnn_lstm_bidir', \
+          # 'rnn_gru_bidir_transfer',\
           ]
 
 # Make directory
@@ -40,7 +40,7 @@ X_test = np.array(df_test[list(range(187))].values)[..., np.newaxis]
 # LSTM
 if 'rnn_lstm' in models:
     model = get_model.rnn_lstm(nclass=1, dense_layers=[64, 16, 8], binary=True)
-    file_name = "new_ptbdb_rnn_lstm"
+    file_name = "ptbdb_rnn_lstm"
     file_path = os.path.join(model_directory, file_name + ".h5")
     model = helpers.run(model, file_path, X, Y)
     model.load_weights(file_path)
@@ -58,7 +58,7 @@ if 'rnn_lstm' in models:
 # GRU
 if 'rnn_gru' in models:
     model = get_model.rnn_gru(nclass=1, dense_layers=[64, 16, 8], binary=True)
-    file_name = "new_ptbdb_rnn_gru"
+    file_name = "ptbdb_rnn_gru"
     file_path = os.path.join(model_directory, file_name + ".h5")
     model = helpers.run(model, file_path, X, Y)
     model.load_weights(file_path)
@@ -77,7 +77,7 @@ if 'rnn_gru' in models:
 # Bidirectional GRU
 if 'rnn_lstm_bidir' in models:
     model = get_model.rnn_lstm_bidir(nclass=1, dense_layers=[64, 16, 8], binary=True)
-    file_name = "new_ptbdb_rnn_lstm_bidir"
+    file_name = "ptbdb_rnn_lstm_bidir"
     file_path = os.path.join(model_directory, file_name + ".h5")
     model = helpers.run(model, file_path, X, Y)
     model.load_weights(file_path)
@@ -96,7 +96,7 @@ if 'rnn_lstm_bidir' in models:
 # Bidirectional GRU
 if 'rnn_gru_bidir' in models:
     model = get_model.rnn_gru_bidir(nclass=1, dense_layers=[64, 16, 8], binary=True)
-    file_name = "new_ptbdb_rnn_gru_bidir"
+    file_name = "ptbdb_rnn_gru_bidir"
     file_path = os.path.join(model_directory, file_name + ".h5")
     model = helpers.run(model, file_path, X, Y)
     model.load_weights(file_path)
