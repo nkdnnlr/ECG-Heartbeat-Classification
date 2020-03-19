@@ -113,7 +113,7 @@ if 'rnn_gru_bidir' in models:
 #
 # Transfer Learning
 if 'rnn_gru_bidir_transfer' in models:
-    base_model = get_model.rnn_gru_bidir(nclass=5, dense_layers=[64, 16], binary=False)
+    base_model = get_model.rnn_gru_bidir(nclass=5, dense_layers=[64, 16, 8], binary=False)
     file_name = "mitbih_rnn_gru_bidir"
     file_path = os.path.join(model_directory, file_name + ".h5")
     base_model.load_weights(file_path)
