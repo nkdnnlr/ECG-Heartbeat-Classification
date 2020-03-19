@@ -163,13 +163,13 @@ def transfer_learning(nclass, base_model, loss=losses.binary_crossentropy):
     base_model.layers.pop()
     base_model.layers[-1].outbound_nodes = []
     base_model.outputs = [base_model.layers[-1].output]
-    x = base_model.get_layer('dense_3').output
+    x = base_model.get_layer('dense_1').output
 
     inp = base_model.input
 
     # x = base_model.output
-    x = Dense(8, activation='relu')(x)
-    x = Dense(8, activation='relu')(x)
+    x = Dense(64, activation='relu')(x)
+    x = Dense(16, activation='relu')(x)
     x = Dense(8, activation='relu')(x)
     x = Dense(nclass, name='Output', activation='sigmoid')(x)
 
