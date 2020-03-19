@@ -14,11 +14,11 @@ from sklearn.model_selection import train_test_split
 
 from utils import get_model, helpers
 
-models = ['rnn_lstm', \
-          'rnn_gru', \
-          'rnn_gru_bidir', \
-          'rnn_lstm_bidir', \
-          # 'rnn_gru_bidir_transfer',\
+models = [#'rnn_lstm', \
+          # 'rnn_gru', \
+          # 'rnn_gru_bidir', \
+          # 'rnn_lstm_bidir', \
+          'rnn_gru_bidir_transfer',\
           ]
 
 # Make directory
@@ -114,13 +114,12 @@ if 'rnn_gru_bidir' in models:
 # Transfer Learning
 if 'rnn_gru_bidir_transfer' in models:
     base_model = get_model.rnn_gru_bidir(nclass=5, dense_layers=[64, 16], binary=False)
-    file_name = "rnn_bidirectional_mitbih"
+    file_name = "mitbih_rnn_gru_bidir"
     file_path = os.path.join(model_directory, file_name + ".h5")
     base_model.load_weights(file_path)
 
     model = get_model.transfer_learning(nclass=1, base_model=base_model, loss=losses.binary_crossentropy)
     file_name = "ptbdb_rnn_gru_bidir_transfer"
-    # file_name = "baseline_rnn_bidir_ptbdb"
     file_path = file_name + ".h5"
     model = helpers.run(model, file_path, X, Y)
     model.load_weights(file_path)
