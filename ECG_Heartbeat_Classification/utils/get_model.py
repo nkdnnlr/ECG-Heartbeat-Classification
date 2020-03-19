@@ -9,7 +9,14 @@ from keras.layers import Dense, Input, Dropout, Convolution1D, MaxPool1D, Global
 from sklearn.metrics import f1_score, accuracy_score
 
 from keras.models import Sequential
-from keras.layers import Dense, Dropout, Embedding, LSTM, GRU, Bidirectional
+from keras.layers import Dense, Dropout, Embedding, LSTM, GRU, Bidirectional, CuDNNLSTM, CuDNNGRU
+
+gpu = tf.test.is_gpu_available()
+print(f"GPU available:{gpu}")
+
+if gpu is not False:
+    LSTM = CuDNNLSTM
+    GRU = CuDNNLSTM
 
 
 def rnn_lstm(nclass, input_shape=(187, 1), recurrent_layers=[64, 128], dense_layers=[64, 16], dropout=0.2, binary=False):
@@ -33,7 +40,7 @@ def rnn_lstm(nclass, input_shape=(187, 1), recurrent_layers=[64, 128], dense_lay
     inp = Input(shape=input_shape)
     x = inp
     for neurons in recurrent_layers:
-        layer = LSTM(neurons, return_sequences=return_sequences, dropout=dropout)(x)
+        x = LSTM(neurons, return_sequences=return_sequences, dropout=dropout)(x)
         return_sequences = False
     for neurons in dense_layers:
         x = Dense(neurons, activation='relu')(x)
@@ -98,7 +105,7 @@ def rnn_gru(nclass, input_shape=(187, 1), recurrent_layers=[64, 128], dense_laye
     inp = Input(shape=input_shape)
     x = inp
     for neurons in recurrent_layers:
-        layer = GRU(neurons, return_sequences=return_sequences, dropout=dropout)(x)
+        x = GRU(neurons, return_sequences=return_sequences, dropout=dropout)(x)
         return_sequences = False
     for neurons in dense_layers:
         x = Dense(neurons, activation='relu')(x)
