@@ -27,6 +27,8 @@ def run(model, file_path):
     callbacks_list = [checkpoint, early, redonplat]  # early
     model.fit(X, Y, epochs=1000, verbose=2, callbacks=callbacks_list, validation_split=0.1)
 
+# Set global random seed for reproducibility
+tf.random.set_seed(42)
 
 # Make directory
 model_directory = "../models"
