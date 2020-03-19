@@ -16,7 +16,7 @@ print(f"GPU available:{gpu}")
 
 if gpu is not False:
     LSTM = CuDNNLSTM
-    GRU = CuDNNLSTM
+    GRU = CuDNNGRU
 
 
 def rnn_lstm(nclass, input_shape=(187, 1), recurrent_layers=[64, 128], dense_layers=[64, 16], dropout=0.2, binary=False):
@@ -40,7 +40,8 @@ def rnn_lstm(nclass, input_shape=(187, 1), recurrent_layers=[64, 128], dense_lay
     inp = Input(shape=input_shape)
     x = inp
     for neurons in recurrent_layers:
-        x = LSTM(neurons, return_sequences=return_sequences, dropout=dropout)(x)
+        x = LSTM(neurons, return_sequences=return_sequences)(x)
+        x = Dropout(rate=dropout)(x)
         return_sequences = False
     for neurons in dense_layers:
         x = Dense(neurons, activation='relu')(x)
@@ -73,8 +74,9 @@ def rnn_lstm_bidir(nclass, input_shape=(187, 1), recurrent_layers=[64, 128], den
     inp = Input(shape=input_shape)
     x = inp
     for neurons in recurrent_layers:
-        layer = LSTM(neurons, return_sequences=return_sequences, dropout=dropout)  # (inp)
+        layer = LSTM(neurons, return_sequences=return_sequences)
         x = Bidirectional(layer)(x)
+        x = Dropout(rate=dropout)(x)
         return_sequences = False
     for neurons in dense_layers:
         x = Dense(neurons, activation='relu')(x)
@@ -105,7 +107,8 @@ def rnn_gru(nclass, input_shape=(187, 1), recurrent_layers=[64, 128], dense_laye
     inp = Input(shape=input_shape)
     x = inp
     for neurons in recurrent_layers:
-        x = GRU(neurons, return_sequences=return_sequences, dropout=dropout)(x)
+        x = GRU(neurons, return_sequences=return_sequences)(x)
+        x = Dropout(rate=dropout)(x)
         return_sequences = False
     for neurons in dense_layers:
         x = Dense(neurons, activation='relu')(x)
@@ -139,8 +142,9 @@ def rnn_gru_bidir(nclass, input_shape=(187, 1), recurrent_layers=[64, 128], dens
     x = inp
     for neurons in recurrent_layers:
         print(neurons)
-        layer = GRU(neurons, return_sequences=return_sequences, dropout=dropout)  # (inp)
+        layer = GRU(neurons, return_sequences=return_sequences)
         x = Bidirectional(layer)(x)
+        x = Dropout(rate=dropout)(x)
         return_sequences = False
     for neurons in dense_layers:
         print(neurons)
