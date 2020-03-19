@@ -2,14 +2,8 @@ import os
 
 import pandas as pd
 import numpy as np
-import tensorflow as tf
 
-from keras import optimizers, losses, activations, models
-from keras.callbacks import ModelCheckpoint, EarlyStopping, LearningRateScheduler, ReduceLROnPlateau
-from keras.layers import Dense, Input, Dropout, Convolution1D, MaxPool1D, GlobalMaxPool1D, GlobalAveragePooling1D, \
-    concatenate
-from keras.models import Sequential
-from keras.layers import Dense, Dropout, Embedding, LSTM, GRU, Bidirectional
+from keras import losses
 from sklearn.model_selection import train_test_split
 
 from utils import get_model, helpers
