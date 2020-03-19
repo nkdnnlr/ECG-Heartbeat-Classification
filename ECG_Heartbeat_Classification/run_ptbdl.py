@@ -16,7 +16,8 @@ from utils import get_model, helpers
 
 models = ['rnn_lstm', \
           'rnn_gru', \
-          'rnn_gru_bidir',\
+          'rnn_gru_bidir', \
+          'rnn_lstm_bidir', \
           # 'rnn_gru_bidir_transfer',\
           ]
 
@@ -70,6 +71,26 @@ if 'rnn_gru' in models:
 
     # Evaluate predictions
     helpers.test_binary(Y_test, pred_test)
+
+
+#
+# Bidirectional GRU
+if 'rnn_lstm_bidir' in models:
+    model = get_model.rnn_lstm_bidir(nclass=1, dense_layers=[64, 16, 8], binary=True)
+    file_name = "new_ptbdb_rnn_lstm_bidir"
+    file_path = os.path.join(model_directory, file_name + ".h5")
+    model = helpers.run(model, file_path, X, Y)
+    model.load_weights(file_path)
+
+    # Save the entire model as a SavedModel.
+    model.save(os.path.join(model_directory, file_name))
+
+    # Make predictions on test set
+    pred_test = model.predict(X_test)
+
+    # Evaluate predictions
+    helpers.test_binary(Y_test, pred_test)
+
 
 #
 # Bidirectional GRU
