@@ -17,7 +17,7 @@ from utils import get_model, helpers
 models = ['rnn_lstm', \
           'rnn_gru', \
           'rnn_gru_bidir',\
-          'rnn_gru_bidir_transfer',\
+          # 'rnn_gru_bidir_transfer',\
           ]
 
 # Make directory
@@ -93,7 +93,7 @@ if 'rnn_gru_bidir' in models:
 # Transfer Learning
 if 'rnn_gru_bidir_transfer' in models:
     base_model = get_model.rnn_gru_bidir(nclass=5, dense_layers=[64, 16], binary=False)
-    file_name = "new_rnn_bidirectional_mitbih"
+    file_name = "rnn_bidirectional_mitbih"
     file_path = os.path.join(model_directory, file_name + ".h5")
     base_model.load_weights(file_path)
 
