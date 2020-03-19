@@ -160,6 +160,13 @@ def rnn_gru_bidir(nclass, input_shape=(187, 1), recurrent_layers=[64, 128], dens
 
 
 def transfer_learning(nclass, base_model, loss=losses.binary_crossentropy):
+    """
+    Transfer learning approach. Take base model, clip last few layers, append new layers and freeze the old ones.
+    :param nclass:
+    :param base_model:
+    :param loss:
+    :return:
+    """
     base_model.layers.pop()
     base_model.layers[-1].outbound_nodes = []
     base_model.outputs = [base_model.layers[-1].output]

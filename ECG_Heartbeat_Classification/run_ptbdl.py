@@ -14,11 +14,11 @@ from sklearn.model_selection import train_test_split
 
 from utils import get_model, helpers
 
-models = [#'rnn_lstm', \
-          # 'rnn_gru', \
-          # 'rnn_gru_bidir', \
+models = ['rnn_lstm', \
+          'rnn_gru', \
+          'rnn_gru_bidir', \
           'rnn_lstm_bidir', \
-          # 'rnn_gru_bidir_transfer',\
+          'rnn_gru_bidir_transfer',\
           ]
 
 # Make directory
@@ -72,9 +72,8 @@ if 'rnn_gru' in models:
     # Evaluate predictions
     helpers.test_binary(Y_test, pred_test)
 
-
 #
-# Bidirectional GRU
+# Bidirectional LSTM
 if 'rnn_lstm_bidir' in models:
     model = get_model.rnn_lstm_bidir(nclass=1, dense_layers=[64, 16, 8], binary=True)
     file_name = "ptbdb_rnn_lstm_bidir"
