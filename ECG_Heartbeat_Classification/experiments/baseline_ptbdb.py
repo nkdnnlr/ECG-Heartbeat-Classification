@@ -27,8 +27,8 @@ from sklearn.metrics import (
 )
 from sklearn.model_selection import train_test_split
 
-df_1 = pd.read_csv("../../data/heartbeat/ptbdb_normal.csv", header=None)
-df_2 = pd.read_csv("../../data/heartbeat/ptbdb_abnormal.csv", header=None)
+df_1 = pd.read_csv("../../data/ECG_Heartbeat_Classification/ptbdb_normal.csv", header=None)
+df_2 = pd.read_csv("../../data/ECG_Heartbeat_Classification/ptbdb_abnormal.csv", header=None)
 df = pd.concat([df_1, df_2])
 
 df_train, df_test = train_test_split(
