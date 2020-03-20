@@ -1,9 +1,18 @@
 import numpy as np
 import tensorflow as tf
 
-from keras.callbacks import ModelCheckpoint, EarlyStopping, LearningRateScheduler, ReduceLROnPlateau
-from sklearn.metrics import accuracy_score, f1_score, average_precision_score, roc_auc_score
-
+from keras.callbacks import (
+    ModelCheckpoint,
+    EarlyStopping,
+    LearningRateScheduler,
+    ReduceLROnPlateau,
+)
+from sklearn.metrics import (
+    accuracy_score,
+    f1_score,
+    average_precision_score,
+    roc_auc_score,
+)
 
 
 def run(model, file_path, X, Y):
@@ -19,13 +28,17 @@ def run(model, file_path, X, Y):
     tf.set_random_seed(42)
 
     # Define callbacks
-    checkpoint = ModelCheckpoint(file_path, monitor='val_acc', verbose=1, save_best_only=True, mode='max')
+    checkpoint = ModelCheckpoint(
+        file_path, monitor="val_acc", verbose=1, save_best_only=True, mode="max"
+    )
     early = EarlyStopping(monitor="val_acc", mode="max", patience=5, verbose=1)
     redonplat = ReduceLROnPlateau(monitor="val_acc", mode="max", patience=3, verbose=2)
     callbacks_list = [checkpoint, early, redonplat]  # early
 
     # Train model
-    model.fit(X, Y, epochs=1000, verbose=2, callbacks=callbacks_list, validation_split=0.1)
+    model.fit(
+        X, Y, epochs=1000, verbose=2, callbacks=callbacks_list, validation_split=0.1
+    )
 
     return model
 

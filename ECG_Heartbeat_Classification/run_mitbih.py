@@ -5,11 +5,12 @@ import numpy as np
 
 from utils import get_model, helpers
 
-models = ['rnn_lstm', \
-          'rnn_gru', \
-          'rnn_gru_bidir', \
-          'rnn_lstm_bidir', \
-          ]
+models = [
+    "rnn_lstm",
+    "rnn_gru",
+    "rnn_gru_bidir",
+    "rnn_lstm_bidir",
+]
 
 # Make directory
 model_directory = "../models"
@@ -27,7 +28,7 @@ X_test = np.array(df_test[list(range(187))].values)[..., np.newaxis]
 
 #
 # LSTM
-if 'rnn_lstm' in models:
+if "rnn_lstm" in models:
     model = get_model.rnn_lstm(nclass=5, dense_layers=[64, 16, 8])
     file_name = "mitbih_rnn_lstm"
     file_path = os.path.join(model_directory, file_name + ".h5")
@@ -45,7 +46,7 @@ if 'rnn_lstm' in models:
 
 #
 # GRU
-if 'rnn_gru' in models:
+if "rnn_gru" in models:
     model = get_model.rnn_gru(nclass=5, dense_layers=[64, 16, 8])
     file_name = "mitbih_rnn_gru"
     file_path = os.path.join(model_directory, file_name + ".h5")
@@ -64,7 +65,7 @@ if 'rnn_gru' in models:
 
 #
 # Bidirectional LSTM
-if 'rnn_lstm_bidir' in models:
+if "rnn_lstm_bidir" in models:
     model = get_model.rnn_lstm_bidir(nclass=5, dense_layers=[64, 16, 8])
     file_name = "mitbih_rnn_lstm_bidir"
     file_path = os.path.join(model_directory, file_name + ".h5")
@@ -83,7 +84,7 @@ if 'rnn_lstm_bidir' in models:
 
 #
 # Bidirectional GRU
-if 'rnn_gru_bidir' in models:
+if "rnn_gru_bidir" in models:
     model = get_model.rnn_gru_bidir(nclass=5, dense_layers=[64, 16, 8])
     file_name = "mitbih_rnn_gru_bidir"
     file_path = os.path.join(model_directory, file_name + ".h5")
@@ -100,4 +101,3 @@ if 'rnn_gru_bidir' in models:
     helpers.test_nonbinary(Y_test, pred_test, verbose=True)
 
 print("Done.")
-
