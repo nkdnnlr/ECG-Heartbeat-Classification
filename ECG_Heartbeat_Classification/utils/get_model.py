@@ -50,12 +50,12 @@ def rnn_lstm(
 
     inp = Input(shape=input_shape)
     x = inp
-    for neurons in recurrent_layers:
+    for i, neurons in enumerate(recurrent_layers):
         x = LSTM(neurons, return_sequences=return_sequences)(x)
         x = Dropout(rate=dropout)(x)
         return_sequences = False
-    for neurons in dense_layers:
-        x = Dense(neurons, activation="relu")(x)
+    for i, neurons in enumerate(dense_layers):
+        x = Dense(neurons, name=f"dense_{i+1}", activation="relu")(x)
     x = Dense(nclass, name="Output", activation=last_activation)(x)
 
     model = models.Model(inputs=inp, outputs=x)
@@ -91,13 +91,13 @@ def rnn_lstm_bidir(
 
     inp = Input(shape=input_shape)
     x = inp
-    for neurons in recurrent_layers:
+    for i, neurons in enumerate(recurrent_layers):
         layer = LSTM(neurons, return_sequences=return_sequences)
         x = Bidirectional(layer)(x)
         x = Dropout(rate=dropout)(x)
         return_sequences = False
-    for neurons in dense_layers:
-        x = Dense(neurons, activation="relu")(x)
+    for i, neurons in enumerate(dense_layers):
+        x = Dense(neurons, name=f"dense_{i+1}", activation="relu")(x)
     x = Dense(nclass, name="Output", activation=last_activation)(x)
 
     model = models.Model(inputs=inp, outputs=x)
@@ -133,12 +133,12 @@ def rnn_gru(
 
     inp = Input(shape=input_shape)
     x = inp
-    for neurons in recurrent_layers:
+    for i, neurons in enumerate(recurrent_layers):
         x = GRU(neurons, return_sequences=return_sequences)(x)
         x = Dropout(rate=dropout)(x)
         return_sequences = False
-    for neurons in dense_layers:
-        x = Dense(neurons, activation="relu")(x)
+    for i, neurons in enumerate(dense_layers):
+        x = Dense(neurons, name=f"dense_{i+1}", activation="relu")(x)
     x = Dense(nclass, name="Output", activation=last_activation)(x)
 
     model = models.Model(inputs=inp, outputs=x)
@@ -174,15 +174,13 @@ def rnn_gru_bidir(
 
     inp = Input(shape=input_shape)
     x = inp
-    for neurons in recurrent_layers:
-        print(neurons)
+    for i, neurons in enumerate(recurrent_layers):
         layer = GRU(neurons, return_sequences=return_sequences)
         x = Bidirectional(layer)(x)
         x = Dropout(rate=dropout)(x)
         return_sequences = False
-    for neurons in dense_layers:
-        print(neurons)
-        x = Dense(neurons, activation="relu")(x)
+    for i, neurons in enumerate(dense_layers):
+        x = Dense(neurons, name=f"dense_{i+1}", activation="relu")(x)
     x = Dense(nclass, name="Output", activation=last_activation)(x)
 
     model = models.Model(inputs=inp, outputs=x)

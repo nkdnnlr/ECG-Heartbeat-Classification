@@ -21,9 +21,9 @@ from keras.layers import (
 from sklearn.metrics import f1_score, accuracy_score
 
 
-df_train = pd.read_csv("../data/heartbeat/mitbih_train.csv", header=None)
+df_train = pd.read_csv("../../data/heartbeat/mitbih_train.csv", header=None)
 df_train = df_train.sample(frac=1)
-df_test = pd.read_csv("../data/heartbeat/mitbih_test.csv", header=None)
+df_test = pd.read_csv("../../data/heartbeat/mitbih_test.csv", header=None)
 
 Y = np.array(df_train[187].values).astype(np.int8)
 X = np.array(df_train[list(range(187))].values)[..., np.newaxis]
@@ -85,7 +85,7 @@ def get_model():
 
 
 model = get_model()
-file_path = "../models/baseline_cnn_mitbih.h5"
+file_path = "../../models/baseline_cnn_mitbih.h5"
 checkpoint = ModelCheckpoint(
     file_path, monitor="val_acc", verbose=1, save_best_only=True, mode="max"
 )
