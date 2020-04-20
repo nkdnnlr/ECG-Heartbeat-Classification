@@ -1,6 +1,6 @@
 ## ECG Heartbeat Classification
 
-Code to the projects related to the 2020 ETHZ course "Machine Learning for Health Care" by Gunnar Rätsch.
+Code to a project related to the 2020 ETHZ course "Machine Learning for Health Care" by Gunnar Rätsch.
 
 * Please make sure to include the data in the correct directory, e.g. for ECG_Heartbeat_Classification, put the `.csv` files in `data/ECG_Heartbeat_Classification`.
 
